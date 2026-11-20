@@ -1,0 +1,20 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Resource": "arn:aws:bedrock:us-east-1:920375856513:inference-profile/us.anthropic.claude-haiku-4-5-20251001-v1:0"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["bedrock-agentcore:InvokeGateway"],
+      "Resource": "arn:aws:bedrock-agentcore:us-east-1:920375856513:gateway/retail-supply-chain-gateway"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["bedrock-agentcore:InvokeAgentRuntime", "bedrock-agentcore:GetAgentRuntime"],
+      "Resource": "arn:aws:bedrock-agentcore:us-east-1:920375856513:runtime/retail_supply_chain_agent-BjapTXB2zw"
+    }
+  ]
+}

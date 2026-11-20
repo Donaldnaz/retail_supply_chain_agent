@@ -1,0 +1,13 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan"],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:920375856513:table/retail_supply_chain_snapshots",
+        "arn:aws:dynamodb:us-east-1:920375856513:table/retail_supply_chain_snapshots/index/region_date_index"
+      ]
+    }
+  ]
+}

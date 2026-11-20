@@ -1,0 +1,16 @@
+{
+  "store_product_key": {"S": "S001#P0001"},
+  "snapshot_date": {"S": "2024-01-01"},
+  "region_date_key": {"S": "East#2024-01-01"},
+  "store_id": {"S": "S001"},
+  "product_id": {"S": "P0001"},
+  "region": {"S": "East"},
+  "category": {"S": "Toys"},
+  "season": {"S": "Winter"},
+  "weather": {"S": "Rainy"},
+  "current_inventory": {"N": "223"},
+  "estimated_daily_demand": {"N": "53.56"},
+  "forecast_delta": {"N": "-13.56"},
+  "our_price": {"N": "55.26"},
+  "competitor_price": {"N": "59.37"}
+}
