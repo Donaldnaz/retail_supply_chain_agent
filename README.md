@@ -1,6 +1,6 @@
 # Retail Supply Chain Agent
 
-> **What you will build:** an AI-powered retail operations assistant that reads store inventory and demand data, explains supply-chain risks, compares pricing, and prepares reorder drafts that require human approval.
+> An AI-powered retail operations assistant that reads store inventory and demand data, explains supply-chain risks, compares pricing, and prepares reorder drafts that require human approval.
 
 ## What this agent does
 
@@ -19,28 +19,8 @@ The agent can:
 The reorder tool does **not** place or execute an order. It calculates a recommendation and marks it with `requires_human_approval: true`.
 
 ## How the application works
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/3247ab8c-0b2a-4954-8280-5576f9344590" />
 
-```text
-User
-  |
-  v
-Next.js frontend
-  |
-  v
-FastAPI backend
-  |
-  v
-Amazon Bedrock AgentCore Runtime
-  |
-  v
-Amazon Bedrock AgentCore Gateway (MCP)
-  |
-  v
-AWS Lambda MCP tools
-  |
-  v
-Amazon DynamoDB
-```
 
 1. A user enters a request in the Next.js interface.
 2. The FastAPI backend sends the prompt and session ID to the AgentCore runtime.
@@ -86,9 +66,9 @@ infra/       DynamoDB, IAM, MCP, and runtime policy examples
 lambda/      DynamoDB-backed MCP tool implementation
 ```
 
-## Deployment lesson
+## Deployment
 
-### Lesson 1 — Prepare the project
+### 1 — Prepare the project
 
 Clone the repository and enter its directory:
 
@@ -105,7 +85,7 @@ cp .env.example .env
 
 Review `.env.example` and replace sample AWS resource values with values for your account when necessary.
 
-### Lesson 2 — Create the DynamoDB table
+### 2 — Create the DynamoDB table
 
 Create the retail snapshot table:
 
@@ -134,7 +114,7 @@ aws dynamodb get-item \
 
 The sample item represents store `S001`, product `P0001`, region `East`, on `2024-01-01`.
 
-### Lesson 3 — Create the Lambda execution role
+### 3 — Create the Lambda execution role
 
 Create the trust role from the supplied policy:
 
@@ -163,7 +143,7 @@ Wait for the role to propagate before creating the Lambda function:
 sleep 10
 ```
 
-### Lesson 4 — Package and deploy the Lambda tools
+### 4 — Package and deploy the Lambda tools
 
 Install the Lambda dependency and create a deployment archive:
 
@@ -227,7 +207,7 @@ aws lambda invoke \
 cat response.json
 ```
 
-### Lesson 5 — Create the MCP gateway
+### 5 — Create the MCP gateway
 
 The gateway exposes the Lambda tool as MCP tools for the Bedrock agent.
 
@@ -256,7 +236,7 @@ Set it for the next steps:
 export GATEWAY_MCP_URL="PASTE_YOUR_MCP_GATEWAY_URL"
 ```
 
-### Lesson 6 — Install and deploy the AgentCore runtime
+### 6 — Install and deploy the AgentCore runtime
 
 Create a Python virtual environment:
 
@@ -288,7 +268,7 @@ If deployment returns an ARN, copy it for the FastAPI backend:
 export AGENT_RUNTIME_ARN="PASTE_YOUR_AGENT_RUNTIME_ARN"
 ```
 
-### Lesson 7 — Run the FastAPI backend
+### 7 — Run the FastAPI backend
 
 Install backend dependencies:
 
@@ -318,7 +298,7 @@ curl -X POST http://localhost:8000/api/chat \
   -d '{"prompt":"Get the latest snapshot for store S001 and product P0001","sessionId":"retail-supply-chain-session-123456789"}'
 ```
 
-### Lesson 8 — Run the Next.js frontend
+### 8 — Run the Next.js frontend
 
 Open a third terminal and install the frontend:
 
@@ -372,69 +352,3 @@ The reorder feature is intentionally non-executing:
 - The agent must say that human approval is required.
 - The frontend never calls a purchase or order API.
 - Approve and Reject buttons send conversational prompts; they do not create an external purchase.
-
-Do not remove these safeguards or present a draft quantity as an already placed order.
-
-## Troubleshooting
-
-### DynamoDB sample item is missing
-
-Run:
-
-```bash
-bash infra/dynamodb-table.sh
-```
-
-Then retry the DynamoDB get-item command.
-
-### Lambda cannot access DynamoDB
-
-Confirm the IAM role has:
-
-- `dynamodb:GetItem`
-- `dynamodb:Query`
-- `dynamodb:Scan`
-
-Review `infra/dynamodb-tool-policy.json` and ensure its table ARN matches your account.
-
-### AgentCore cannot reach the gateway
-
-Confirm:
-
-- `GATEWAY_MCP_URL` contains the `/mcp` path
-- The MCP protocol version is `2025-11-25`
-- The gateway tools use the deployed Lambda function
-- The AgentCore runtime credentials allow gateway invocation
-
-### Backend returns a 502 response
-
-Check:
-
-- `AGENT_RUNTIME_ARN` is the ARN of the deployed runtime
-- AWS credentials are configured for the backend process
-- The runtime and gateway are deployed in `us-east-1`
-- CloudWatch Logs are enabled and inspected for runtime errors
-
-### Frontend cannot reach the backend
-
-Confirm the backend is listening on port `8000` and set the frontend API URL when needed:
-
-```bash
-NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev
-```
-
-## Cleanup
-
-Remove local files and stop local processes first. Then remove AWS resources in the reverse deployment order:
-
-```bash
-aws lambda delete-function --function-name retail-supply-chain-mcp-tools --region us-east-1
-aws iam delete-role-policy --role-name supply-chain-mcp-lambda-role --policy-name DynamoDBReadAccess
-aws iam detach-role-policy \
-  --role-name supply-chain-mcp-lambda-role \
-  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-aws iam delete-role --role-name supply-chain-mcp-lambda-role
-aws dynamodb delete-table --table-name retail_supply_chain_snapshots --region us-east-1
-```
-
-Delete the AgentCore runtime and gateway from the Bedrock AgentCore console or CLI after confirming they are no longer needed.
