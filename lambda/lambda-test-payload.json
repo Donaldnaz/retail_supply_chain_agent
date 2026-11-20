@@ -1,0 +1,9 @@
+{
+  "tool_name": "simulate_reorder_recommendation",
+  "arguments": {
+    "store_id": "S001",
+    "product_id": "P0001",
+    "cover_days": 7,
+    "lead_time_days": 3
+  }
+}
