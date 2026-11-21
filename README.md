@@ -2,9 +2,13 @@
 
 > An AI-powered retail operations assistant that reads store inventory and demand data, explains supply-chain risks, compares pricing, and prepares reorder drafts that require human approval.
 
+## Demo
+
+[Watch the demo video](https://cap.so/s/34wj8rb8p9s918h)
+
 ## What this agent does
 
-The Retail Supply Chain Agent is a conversational operations assistant for store and product decisions. It uses Amazon Bedrock AgentCore, an MCP gateway, AWS Lambda, and Amazon DynamoDB to answer questions grounded in supply-chain snapshot data.
+The Retail Supply Chain Agent is a conversational operations assistant for store and product decisions. It uses Amazon Bedrock AgentCore, an MCP gateway, AWS Lambda, and Amazon DynamoDB to answer questions and inspect operational supply-chain data.
 
 The agent can:
 
@@ -54,7 +58,7 @@ Set the AWS Region explicitly:
 export AWS_REGION=us-east-1
 ```
 
-> The repository contains examples for AWS account `920375856513`. If you deploy to another account, replace the account IDs and resource names throughout `.env.example`, policy JSON files, and deployment scripts.
+> The repository contains examples for AWS account `920375856513`. If you deploy to another account, replace the account IDs and resource names throughout `.env.example`, policy JSON files, and deployment commands.
 
 ## Repository structure
 
